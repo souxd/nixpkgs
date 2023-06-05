@@ -1,15 +1,19 @@
-{ lib, stdenv, fetchurl, freetype, libjpeg, zlib }:
+{ lib, stdenv, fetchFromGitHub, perl, freetype, libjpeg, zlib }:
 
 stdenv.mkDerivation rec {
   pname = "swftools";
-  version = "0.9.2";
+  version = "2021-12-16";
 
-  src = fetchurl {
-    url = "http://www.swftools.org/${pname}-${version}.tar.gz";
-    sha256 = "1w81dyi81019a6jmnm5z7fzarswng27lg1d4k4d5llxzqszr2s5z";
+  src = fetchFromGitHub {
+    owner = "matthiaskramm";
+    repo = "swftools";
+    rev = "772e55a271f66818b06c6e8c9b839befa51248f4";
+    hash = "sha256-fLSs/tqSi1X4r+OIvLWmrZ782p3bXj3Usv2+Y3MSCik=";
   };
 
-  patches = [ ./swftools.patch ];
+  patches = [ ./bitpressure_strategy1.patch ];
+
+  nativeBuildInputs = [ perl ];
 
   buildInputs = [ freetype libjpeg zlib ];
 
@@ -20,6 +24,7 @@ stdenv.mkDerivation rec {
     maintainers = [ maintainers.koral ];
     platforms = lib.platforms.unix;
     knownVulnerabilities = [
+      "CVE-2017-8401"
       "CVE-2017-10976"
       "CVE-2017-11096"
       "CVE-2017-11097"
@@ -27,6 +32,7 @@ stdenv.mkDerivation rec {
       "CVE-2017-11099"
       "CVE-2017-11100"
       "CVE-2017-11101"
+      "CVE-2017-16711"
       "CVE-2017-16793"
       "CVE-2017-16794"
       "CVE-2017-16796"
